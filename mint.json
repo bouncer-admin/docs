@@ -15,37 +15,32 @@
       "to": "#07C983"
     }
   },
+  "openapi": ["/api-reference/openapi-from-postman.yml"],
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:support@usebouncer.com"
     }
   ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "name": "Login",
+    "url": "https://app.usebouncer.com"
   },
   "tabs": [
     {
       "name": "API Reference",
       "url": "api-reference"
+    },
+    {
+      "name": "Essentials",
+      "url": "essentials"
     }
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
+      "url": "https://www.usebouncer.com/blog"
     }
   ],
   "navigation": [
@@ -55,11 +50,15 @@
     },
     {
       "group": "Essentials",
-      "pages": ["essentials/markdown", "essentials/code", "essentials/images", "essentials/settings", "essentials/navigation"]
+      "pages": ["essentials/code"]
+    },
+    {
+      "group": "Get Started 2",
+      "pages": ["api-reference"]
     },
     {
       "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
+      "pages": ["api-reference/introduction", "api-reference/api"]
     },
     {
       "group": "Endpoint Examples",
@@ -67,6 +66,18 @@
         "api-reference/endpoint/get",
         "api-reference/endpoint/create",
         "api-reference/endpoint/delete"
+      ]
+    },
+    {
+      "group": "Batch",
+      "pages": [
+        "api-reference/endpoint/batch-create"
+      ]
+    },
+    {
+      "group": "Batch 2",
+      "pages": [
+        "api-reference/endpoint/batch-create"
       ]
     }
   ],
