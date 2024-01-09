@@ -15,9 +15,7 @@
       "to": "#07C983"
     }
   },
-  "openapi": [
-    "/api-reference/openapi-from-postman.yml"
-  ],
+  "openapi": ["/api-reference/openapi-from-postman.yml"],
   "topbarLinks": [
     {
       "name": "Support",
@@ -48,30 +46,19 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "development"
-      ]
+      "pages": ["introduction", "quickstart", "development"]
     },
     {
       "group": "Essentials",
-      "pages": [
-        "essentials/code"
-      ]
+      "pages": ["essentials/code"]
     },
     {
       "group": "Get Started 2",
-      "pages": [
-        "api-reference"
-      ]
+      "pages": ["api-reference"]
     },
     {
       "group": "API Documentation",
-      "pages": [
-        "api-reference/introduction",
-        "api-reference/api"
-      ]
+      "pages": ["api-reference/introduction", "api-reference/api"]
     },
     {
       "group": "Endpoint Examples",
