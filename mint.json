@@ -98,10 +98,5 @@
     "twitter": "https://twitter.com/mintlify",
     "github": "https://github.com/mintlify",
     "linkedin": "https://www.linkedin.com/company/mintsearch"
-  },
-  "analytics": {
-    "gtm": {
-      "tagId": "GTM-MSFJ4SF"
-    }
   }
 }
