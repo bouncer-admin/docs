@@ -14,6 +14,11 @@
       "from": "#0D9373",
       "to": "#07C983"
     }
+  },  
+  "analytics": {
+    "gtm": {
+      "tagId": "GTM-MSFJ4SF"
+    }
   },
   "openapi": ["/api-reference/openapi-from-postman.yml"],
   "topbarLinks": [
