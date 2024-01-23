@@ -1,0 +1,80 @@
+---
+openapi: post /v1.1/email/verify/batch
+---
+
+This method is recommended when the quality of verification is of a
+value as it characterises the best precision of email validation and the
+lowest possible amount of “unknown” results.
+
+
+Provide array of email addresses, with names if needed (optional).
+
+
+Names will be returned in the response data and can also be used to pass
+your internal ID.
+
+
+For example:
+
+
+``` json
+
+[
+  { "email": "jane@usebouncer.com", "name": "Jane Doe" },
+  { "email": "john@usebouncer.com"}
+]
+
+
+```
+
+
+Please make sure to store requestId as it will be necessary to check
+status and get results for the request.
+
+
+**Integration flow**
+
+
+There are 2 ways to integrate with batch, using status endpoint or using
+callback parameter.
+
+
+Up to 25 batches will be processed in parallel.
+
+
+_**Using Status Endpoint**_
+
+
+```
+
+title Batch Integration Flow With Status Endpoint
+
+Client->>Bouncer: POST /v1.1/email/verify/batch
+
+loop every 10-30s until status == 'completed'
+    Client->>Bouncer: GET /v1.1/email/verify/batch/<ID>
+end
+
+Client->>Bouncer: GET
+/v1.1/email/verify/batch/<ID>/download?download=all
+
+
+```
+
+
+_**Using Callbacks**_
+
+
+```
+
+title Batch Integration Flow With Callbacks
+
+Client->>Bouncer: POST /v1.1/email/verify/batch?callback=<YOUR-URL>
+
+Bouncer->>Client: POST <YOUR-URL>
+
+Client->>Bouncer: GET
+/v1.1/email/verify/batch/<ID>/download?download=all
+
+
+```

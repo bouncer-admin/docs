@@ -1,0 +1,107 @@
+---
+title: Terminology
+---
+
+## Statuses
+Every email address that you verify, will come back with a result that is either 'deliverable', 'undeliverable', 'risky' or 'unknown'. Below is a short explanation of what each means:
+
+- `deliverable` - The recipient's email provider has confirmed that the email address exists, it is safe to send.
+- `risky` - The email address may result in a bounce or low engagement. Risky addresses: Accept All, Full Mailbox or Disposable.
+- `undeliverable` - The address is either syntactically incorrect or does not exist.
+- `unknown` - We were unable to receive a response from the email provider.
+
+## Reasons
+Additionally to the status of your results, Bouncer will provide you with a reason for the results:
+
+### risky
+- `low_deliverability` - Email address appears to be deliverable, but deliverability cannot be guaranteed (in most cases it is caused by catch_all / accept_all configuration of recipient’s server or full mailbox).
+- `low_quality` - Email address has quality issues that may make it a risky or low-value address (in most cases it is caused by the fact that it is a disposable/temporary email).
+
+### undeliverable
+- `invalid_email` - Specified email doesn't have a valid email address syntax.
+- `invalid_domain` - Domain for email does not exist or has no valid DNS records.
+- `rejected_email` - Email address was rejected by the SMTP server, email address does not exist.
+
+### unknown
+- `dns_error` - We were unable to resolve DNS records or domain is misconfigured.
+- `unavailable_smtp` - SMTP server was unavailable to process our request.
+- `unsupported` - Email hosted by an unsupported email service provider.
+- `timeout` - Verification required more time than was available.
+- `unknown` - An unexpected error has occurred.
+
+## Domain
+Bouncer also provides some information about the domain of the email address:
+
+### name
+Domain of the email.
+
+## acceptAll
+Is domain configured to accept all emails?
+
+- `yes` - Domain of the email address is configured to accept all /catch all the emails.
+- `no` - Domain of the email address does not accept all emails.
+- `unknown` - Bouncer was unable to check if the domain of the email address is configured to accept all / catch all the emails.
+
+### disposable
+Is domain known disposable / temporary email provider?
+
+- `yes` - Email address is hosted by a known disposable / temporary email provider.
+- `no` - Email address is not hosted by a known disposable / temporary email provider.
+- `unknown` - Bouncer was unable to check if the email is a deposable / temporary email address.
+
+### free
+Is domain known free email provider?
+
+- `yes` - Email address is hosted by a known free email provider.
+- `no` - Email address is not hosted by a known free email provider.
+- `unknown` - Bouncer was unable to check if the email is a free email address.
+
+## Account
+Bouncer also provides some information about the email account itself:
+
+### role
+Is the email address a role / functional one (like support, hello, etc.)?
+
+- `yes` - Email address is associated with a function.
+- `no` - Email address is not associated with a function.
+- `unknown` - Bouncer was unable to check if the email address is a role / functional one.
+
+### disabled
+Is the account disabled?
+
+- `yes` - Account is disabled.
+- `no` - Account is not disabled.
+- `unknown` - Bouncer was unable to check if the account is disabled.
+
+### fullMailbox
+Is the mailbox full?
+
+- `yes` - Mailbox is full.
+- `no` - Mailbox is not full.
+- `unknown` - Bouncer was unable to check if the mailbox is full.
+
+## Provider
+Name of infrastructure provider which handles SMTP communication for this domain.
+It can be either an email service provider or a name of an anti-spam filter provider which protects underlying infrastructure.
+
+## DNS
+- type: `MX` - domain does have MX records configured
+- type: `A` - only A records were found
+- `record` - dns record used for verification
+
+## Did You Mean
+If the email address you have provided seems to be undeliverable or of low quality - Bouncer may find a suggestion of a correct one and return it in the didYouMean field.
+
+Please note it was not fully verified, so you might want to run a verification of the suggested email address.
+
+## Score
+Score represents chance for successful delivery of email. 100 means 100% chance of delivery, given sending infrastructure has good reputation.
+
+Empty value means that it wouldn't make sense to evaluate score, for example in the case of timeout.
+
+## Toxic
+If toxicity has been checked this flag will have one of the values "yes", "no", "unknown". Meaning of which are as follows:
+
+- yes - email or its domain has been found in one of our lists which indicate that it was involved in spam, abusing, is owned by a litigator or a complainer, or is a spam trap
+- no - it has not been found on any of our email toxicity lists
+- unknown - it has not been found on any of our lists, although it may be ambiguous

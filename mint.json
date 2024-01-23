@@ -1,89 +1,108 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Bouncer",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg",
-    "href": "https://www.usebouncer.com"
+    "light": "/logo/light.png",
+    "dark": "/logo/dark.png"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
-    "anchors": {
-      "from": "#0D9373",
-      "to": "#07C983"
-    }
-  },  
+    "primary": "#01a4c6",
+    "light": "#45C3DE",
+    "dark": "#01a4c6"
+  },
   "analytics": {
     "gtm": {
       "tagId": "GTM-MSFJ4SF"
     }
   },
-  "openapi": ["/api-reference/openapi-from-postman.yml"],
-  "topbarLinks": [
-    {
-      "name": "Support",
-      "url": "mailto:support@usebouncer.com"
-    }
+  "openapi": [
+    "/api-reference/openapi.yml"
   ],
   "topbarCtaButton": {
-    "name": "Login",
-    "url": "https://app.usebouncer.com"
+    "name": "Sign Up",
+    "url": "https://app.usebouncer.com/signup"
   },
+  "topbarLinks": [
+    {
+      "name": "Log In",
+      "url": "https://app.usebouncer.com/login"
+    }
+  ],
   "tabs": [
     {
       "name": "API Reference",
       "url": "api-reference"
-    },
-    {
-      "name": "Essentials",
-      "url": "essentials"
     }
   ],
   "anchors": [
     {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://www.usebouncer.com/blog"
+      "name": "FAQ",
+      "icon": "block-question",
+      "url": "https://www.usebouncer.com/faq/"
+    },
+    {
+      "name": "Privacy Policy",
+      "icon": "lock",
+      "url": "https://www.usebouncer.com/privacy-policy/"
+    },
+    {
+      "name": "Status",
+      "icon": "signal-bars",
+      "url": "https://status.usebouncer.com/"
     }
   ],
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
-    },
-    {
-      "group": "Essentials",
-      "pages": ["essentials/code"]
-    },
-    {
-      "group": "Get Started 2",
-      "pages": ["api-reference"]
-    },
-    {
-      "group": "API Documentation",
-      "pages": ["api-reference/introduction", "api-reference/api"]
-    },
-    {
-      "group": "Endpoint Examples",
+      "group": "Welcome to Bouncer",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "introduction",
+        "getting-started",
+        "terminology",
+        "sandbox"
+      ]
+    },
+    {
+      "group": "Credits",
+      "pages": [
+        "api-reference/credits/check-available-credits"
+      ]
+    },
+    {
+      "group": "Real Time",
+      "pages": [
+        "api-reference/real-time/verify-email"
       ]
     },
     {
       "group": "Batch",
       "pages": [
-        "api-reference/endpoint/batch-create"
+        "api-reference/batch/create-batch-request",
+        "api-reference/batch/check-status",
+        "api-reference/batch/delete-request",
+        "api-reference/batch/finish",
+        "api-reference/batch/get-results"
       ]
     },
     {
-      "group": "Batch 2",
+      "group": "Batch Sync",
       "pages": [
-        "api-reference/endpoint/batch-create"
+        "api-reference/batch-sync/create-simple-batch-request"
+      ]
+    },
+    {
+      "group": "Toxicity",
+      "pages": [
+        "api-reference/toxicity/create-toxicity-list-job",
+        "api-reference/toxicity/check-toxicity-list-job-status",
+        "api-reference/toxicity/delete-toxicity-list-job",
+        "api-reference/toxicity/download-toxicity-list-results"
+      ]
+    },
+    {
+      "group": "Domain",
+      "pages": [
+        "api-reference/domain/verify-domain"
       ]
     }
   ],

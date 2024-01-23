@@ -1,0 +1,1437 @@
+openapi: 3.0.0
+info:
+  title: Bouncer
+  description: >-
+    Bouncer Email Verification API lets you validate email address and verify
+    its deliverability, in the way you want.
+
+
+    It’s easy to integrate, powerful, robust, secure, ultrafast and affordable.
+
+
+    Let Bouncer handle verification and validation of your email addresses, with
+    Real-Time (synchronous), Batch (asynchronous), and a hybrid of those two
+    Batch Synchronous end-points.
+
+
+    If at any time you would need extra support from our side, you can reach us
+    by email at :
+    [support@usebouncer.com](https://mailto:support@usebouncer.com)
+
+
+    # Getting Started
+
+
+    ## Authentication
+
+
+    All calls made to the Bouncer API have to be made using HTTPS.
+
+
+    In order to generate your API Key go
+    [here](https://app.usebouncer.com/member/api/) or:
+
+
+    - sign up for a Bouncer account [here](https://app.usebouncer.com/signup),
+
+    - click on the API on the left-site menu,
+
+    - click Generate API Key button.
+        
+
+    Bouncer API supports 2 methods of authentication:
+
+
+    #### x-api-key in header
+
+
+    ``` bash
+
+    curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com
+    -H 'x-api-key: API-KEY'
+
+     ```
+
+    #### "Basic" authentication with api key as password
+
+
+    ``` bash
+
+    curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com
+    -u :API-KEY
+
+     ```
+
+    ## Error Handling
+
+
+    The API makes use of standard HTTP errors to indicate the success or failure
+    of a request. The 2xx series of response codes indicate a success, 4xx
+    indicates an error from the client side, and a 5xx error indicates a
+    server-side error. Here are the HTTP response codes the API utilises:
+
+
+    - 200 Success
+
+    - 400 Bad Request
+
+    - 401 Unauthorized
+
+    - 402 Payment Required
+
+    - 403 Forbidden
+
+    - 404 Not Found
+
+    - 429 Too Many Requests
+
+    - 503 Service Unavailable
+        
+
+    Cases to handle while implementing integration:
+
+
+    - Status code 402 - Account does not have enough credits to handle request.
+    Purchase is required. Other way to handle this is to configure email alerts
+    or auto-refill available with subscription.
+
+    - Status code 429 - Request have been rate limited. Too many requests have
+    been sent.
+
+    - Status code 503 - In some edge cases it's possible that response with
+    status code 503 will be returned. In that case retry should solve the
+    problem.
+        
+
+    # Terminology
+
+
+    ## Statuses
+
+
+    Every email address that you verify, will come back with a result that is
+    either 'deliverable', 'undeliverable', 'risky' or 'unknown'. Below is a
+    short explanation of what each means:
+
+
+    - `deliverable` - The recipient's email provider has confirmed that the
+    email address exists, it is safe to send.
+
+    - `risky` - The email address may result in a bounce or low engagement.
+    Risky addresses: Accept All, Full Mailbox or Disposable.
+
+    - `undeliverable` - The address is either syntactically incorrect or does
+    not exist.
+
+    - `unknown` - We were unable to receive a response from the email provider.
+        
+
+    ## Reasons
+
+
+    Additionally to the status of your results, Bouncer will provide you with a
+    reason for the results:
+
+
+    ### risky
+
+
+    - `low_deliverability` - Email address appears to be deliverable, but
+    deliverability cannot be guaranteed (in most cases it is caused by catch_all
+    / accept_all configuration of recipient’s server or full mailbox).
+
+    - `low_quality` - Email address has quality issues that may make it a risky
+    or low-value address (in most cases it is caused by the fact that it is a
+    disposable/temporary email).
+        
+
+    ### undeliverable
+
+
+    - `invalid_email` - Specified email doesn't have a valid email address
+    syntax.
+
+    - `invalid_domain` - Domain for email does not exist or has no valid DNS
+    records.
+
+    - `rejected_email` - Email address was rejected by the SMTP server, email
+    address does not exist.
+        
+
+    ### unknown
+
+
+    - `dns_error` - We were unable to resolve DNS records or domain is
+    misconfigured.
+
+    - `unavailable_smtp` - SMTP server was unavailable to process our request.
+
+    - `unsupported` - Email hosted by an unsupported email service provider.
+
+    - `timeout` - Verification required more time than was available.
+
+    - `unknown` - An unexpected error has occurred.
+        
+
+    ## Domain
+
+
+    Bouncer also provides some information about the domain of the email
+    address:
+
+
+    ### name
+
+
+    Domain of the email.
+
+
+    ### acceptAll
+
+
+    Is domain configured to accept all emails?
+
+
+    - `yes` - Domain of the email address is configured to accept all /catch all
+    the emails.
+
+    - `no` - Domain of the email address does not accept all emails.
+
+    - `unknown` - Bouncer was unable to check if the domain of the email address
+    is configured to accept all / catch all the emails.
+        
+
+    ### disposable
+
+
+    Is domain known disposable / temporary email provider?
+
+
+    - `yes` - Email address is hosted by a known disposable / temporary email
+    provider.
+
+    - `no` - Email address is not hosted by a known disposable / temporary email
+    provider.
+
+    - `unknown` - Bouncer was unable to check if the email is a deposable /
+    temporary email address.
+        
+
+    ### free
+
+
+    Is domain known free email provider?
+
+
+    - `yes` - Email address is hosted by a known free email provider.
+
+    - `no` - Email address is not hosted by a known free email provider.
+
+    - `unknown` - Bouncer was unable to check if the email is a free email
+    address.
+        
+
+    ## Account
+
+
+    Bouncer also provides some information about the email account itself:
+
+
+    ### role
+
+
+    Is the email address a role / functional one (like support, hello, etc.)?
+
+
+    - `yes` - Email address is associated with a function.
+
+    - `no` - Email address is not associated with a function.
+
+    - `unknown` - Bouncer was unable to check if the email address is a role /
+    functional one.
+        
+
+    ### disabled
+
+
+    Is the account disabled?
+
+
+    - `yes` - Account is disabled.
+
+    - `no` - Account is not disabled.
+
+    - `unknown` - Bouncer was unable to check if the account is disabled.
+        
+
+    ### fullMailbox
+
+
+    Is the mailbox full?
+
+
+    - `yes` - Mailbox is full.
+
+    - `no` - Mailbox is not full.
+
+    - `unknown` - Bouncer was unable to check if the mailbox is full.
+        
+
+    ## Provider
+
+
+    Name of infrastructure provider which handles SMTP communication for this
+    domain.  
+
+    It can be either an email service provider or a name of an anti-spam filter
+    provider which protects underlying infrastructure.
+
+
+    ## DNS
+
+
+    - type: `MX` - domain does have MX records configured
+
+    - type: `A` - only A records were found
+
+    - `record` - dns record used for verification
+        
+
+    ## Did You Mean
+
+
+    If the email address you have provided seems to be undeliverable or of low
+    quality - Bouncer may find a suggestion of a correct one and return it in
+    the didYouMean field.
+
+
+    Please note it was not fully verified, so you might want to run a
+    verification of the suggested email address.
+
+
+    ## Score
+
+
+    Score represents chance for successful delivery of email. 100 means 100%
+    chance of delivery, given sending infrastructure has good reputation.
+
+
+    Empty value means that it wouldn't make sense to evaluate score, for example
+    in the case of timeout.
+
+
+    ## Toxic
+
+
+    If toxicity has been checked this flag will have one of the values "yes",
+    "no", "unknown". Meaning of which are as follows:
+
+
+    - yes - email or its domain has been found in one of our lists which
+    indicate that it was involved in spam, abusing, is owned by a litigator or a
+    complainer, or is a spam trap
+
+    - no - it has not been found on any of our email toxicity lists
+
+    - unknown - it has not been found on any of our lists, although it may be
+    ambiguous
+        
+
+    # Sandbox
+
+
+    To develop and test your integration special sandbox emails can be used free
+    of charge. For batch requests credits will be allocated when batch is
+    created and returned when completed.
+
+
+    Emails that can be used free of charge:
+
+
+    [deliverable@sandbox.usebouncer.com](https://mailto:deliverable@sandbox.usebouncer.com)  
+
+    [free@sandbox.usebouncer.com](https://mailto:free@sandbox.usebouncer.com)  
+
+    [disposable@sandbox.usebouncer.com](https://mailto:disposable@sandbox.usebouncer.com)  
+
+    [accept-all@sandbox.usebouncer.com](https://mailto:accept-all@sandbox.usebouncer.com)  
+
+    [undeliverable@sandbox.usebouncer.com](https://mailto:undeliverable@sandbox.usebouncer.com)  
+
+    [unknown@sandbox.usebouncer.com](https://mailto:unknown@sandbox.usebouncer.com)  
+
+    [other@sandbox.usebouncer.com](https://mailto:other@sandbox.usebouncer.com)
+
+
+    Any of them can be modified with a "+" suffix to generate more unique
+    emails. For example:
+
+
+    [deliverable+12345@sandbox.usebouncer.com](https://mailto:deliverable+12345@sandbox.usebouncer.com)
+  version: 1.0.0
+servers:
+  - url: https://api.usebouncer.com
+components:
+  securitySchemes:
+    apikeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+security:
+  - apikeyAuth: []
+tags:
+  - name: credits
+    description: >-
+      Information about credits. You can use this endpoint to check how many
+      email verification credits are available at your account.
+  - name: real-time
+    description: >-
+      You can use Bouncer’s Real-time Email Verification API to check email
+      addresses at the moment of entry, and implement it for your sing up forms.
+
+
+      It is a full email verification and email validation method – it not only
+      checks the syntax and domain of the address but also contacts underlying
+      SMTP servers to check deliverability of email addresses.
+  - name: batch
+    description: >-
+      If you need to verify multiple email addresses in a batch, you can use our
+      Batch Email Verification API.
+
+
+      Bouncer distributed infrastructure will make sure to get best possible
+      results and retry any verification in case one is required.
+
+
+      **Speed**
+
+
+      Default settings allow our customers to verify 100-200k email addresses
+      per hour, however if your use case requires higher throughput, please let
+      us know and we will be able to adjust your configuration.
+
+
+      **Rate Limiting**
+
+
+      The Batch Email Verification API is limited to creating up to 60 batches
+      per minute and 200 requests to other related endpoints.
+
+
+      **Batch size recommendation**
+
+
+      Single batch can process up to 100,000 emails, while recommended size
+      would be anything between 1000-10000 emails.
+  - name: batch-sync
+    description: >-
+      If you need to verify multiple email addresses in a batch, but you prefer
+      synchronous integrations you can use our Synchronous Batch Email
+      Verification API.
+
+
+      Bouncer distributed infrastructure will make sure to get best possible
+      results and retry any verification in case one is required.
+
+
+      **Speed**
+
+
+      Default settings allow our customers to verify 100k email addresses per
+      hour, however if your use case requires higher throughput, please let us
+      know and we will be able to adjust your configuration.
+
+
+      **Rate Limiting**
+
+
+      The Batch Sync Email Verification API is limited to 10 requests per minute
+      by default.
+
+
+      **Batch size recommendation**
+
+
+      Single request can hold up to 10,000 emails.
+
+
+      **Special considerations**
+
+
+      Requests should be sent sequentially with delay between requests of 15sec
+      to 10min.
+
+
+      Results are kept up to 24h in Bouncer. After that delay email will be
+      verified again and credits will be charged.
+  - name: toxicity
+    description: |-
+      **Rate Limiting**
+
+      API allows creating of 10 lists per minute.
+  - name: domain
+    description: >-
+      You can use Bouncer’s Domain Verification API to check domain information.
+
+
+      It can be usefull to verify is domain has valid MX records and if it
+      behaves as a "catch all" domain.
+paths:
+  /v1.1/credits:
+    get:
+      tags:
+        - credits
+      summary: Check available credits
+      description: |-
+        Retrieve available credits.
+
+        **Rate Limiting**
+
+        **Limit of 10 requests per minute is available.**
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                credits: 1000
+        '401':
+          description: Unauthorized
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 401
+                error: Unauthorized
+                message: user not found
+        '429':
+          description: Too Many Requests
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 429
+                error: Too Many Requests
+                message: too many requests
+  /v1.1/email/verify:
+    get:
+      tags:
+        - real-time
+      summary: Verify email
+      description: >-
+        Verifies single email in real-time synchronous manner.
+
+
+        Bouncer will return best possible results that it will be able to gather
+        within 10 seconds (maximum 30).
+
+
+        This method is recommended when speed of verification is of a value as
+        usually this method returns 5% more “unknown” results than full
+        integration using Batch Email Verification API.
+
+
+        **Rate Limiting**
+
+
+        Real-Time Email Verification API is limited to 1000 requests per minute
+        by default. If your use case requires higher limits, please let us know.
+
+
+        **Retry After**
+
+
+        In cases when we may provide results after greylisting additional
+        parameter "retryAfter" will be added. For an example please see Example
+        Request "OK (greylisting)".
+      parameters:
+        - name: email
+          in: query
+          schema:
+            type: string
+          description: (Required) email
+          example: hello@usebouncer.com
+        - name: timeout
+          in: query
+          schema:
+            type: integer
+          description: 'timeout for verification (default: 10)'
+          example: '10'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: OK
+                  value:
+                    email: john@usebouncer.com
+                    name: John Doe
+                    status: deliverable
+                    reason: accepted_email
+                    domain:
+                      name: usebouncer.com
+                      acceptAll: 'no'
+                      disposable: 'no'
+                      free: 'no'
+                    account:
+                      role: 'no'
+                      disabled: 'no'
+                      fullMailbox: 'no'
+                    dns:
+                      type: MX
+                      record: aspmx.l.google.com.
+                    provider: google.com
+                    score: 100
+                    toxic: unknown
+                example-1:
+                  summary: OK (timeout)
+                  value:
+                    email: john@usebouncer.com
+                    name: John Doe
+                    status: unknown
+                    reason: timeout
+                    domain:
+                      name: usebouncer.com
+                      acceptAll: unknown
+                      disposable: 'no'
+                      free: 'no'
+                    account:
+                      role: 'no'
+                      disabled: unknown
+                      fullMailbox: unknown
+                    dns:
+                      type: MX
+                      record: aspmx.l.google.com.
+                    provider: google.com
+                example-2:
+                  summary: OK (greylisting)
+                  value:
+                    email: john@usebouncer.com
+                    name: John Doe
+                    status: unknown
+                    reason: timeout
+                    domain:
+                      name: usebouncer.com
+                      acceptAll: unknown
+                      disposable: 'no'
+                      free: 'no'
+                    account:
+                      role: 'no'
+                      disabled: unknown
+                      fullMailbox: unknown
+                    dns:
+                      type: MX
+                      record: aspmx.l.google.com.
+                    provider: google.com
+                    retryAfter: '2022-11-24T09:55:09.029Z'
+                example-3:
+                  summary: OK (with didYouMean)
+                  value:
+                    email: john1234 @gnail.com.
+                    status: undeliverable
+                    reason: invalid_email
+                    didYouMean: john1234@gmail.com
+        '402':
+          description: Payment Required
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '402'
+                error: Payment Required
+                message: 0 credits left
+        '403':
+          description: Forbidden
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 429
+                error: Too Many Requests
+                message: too many requests
+  /v1.1/email/verify/batch:
+    post:
+      tags:
+        - batch
+      summary: Create batch request
+      description: >-
+        Verifies one or multiple emails in a batch, offline manner.  
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: string
+              example:
+                [
+                {"email": "john@usebouncer.com", "name": "John Doe"},
+                {"email": "jenny@usebouncer.com"}
+                ]
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                batchId: 4d5fdf6b5ee97c4dbbccbfe1
+                created: '2023-03-26T18:08:15.033Z'
+                status: queued
+                quantity: 2
+                duplicates: 0
+        '403':
+          description: Forbidden
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '402'
+                error: Payment Required
+                message: 1 credits left
+  /v1.1/email/verify/batch/{batchId}:
+    get:
+      tags:
+        - batch
+      summary: Check status
+      description: >-
+        Retrieve status of your request based on request id.
+      parameters:
+        - name: batchId
+          in: path
+          schema:
+            type: string
+          required: true
+          description: batchId from create response
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: OK (processing)
+                  value:
+                    batchId: 4d5fdf6b5ee97c4dbbccbfe1
+                    created: '2023-03-26T15:27:26.713Z'
+                    started: '2023-03-26T15:27:30.124Z'
+                    status: processing
+                    quantity: 2
+                    duplicates: 0
+                example-1:
+                  summary: OK (completed)
+                  value:
+                    batchId: 4d5fdf6b5ee97c4dbbccbfe1
+                    created: '2023-03-26T15:27:26.713Z'
+                    started: '2023-03-26T15:27:30.124Z'
+                    completed: '2023-03-26T15:27:43.250Z'
+                    status: completed
+                    quantity: 2
+                    duplicates: 0
+                    credits: 2
+                example-2:
+                  summary: OK (completed with stats)
+                  value:
+                    batchId: 4d5fdf6b5ee97c4dbbccbfe1
+                    created: '2023-03-26T15:27:26.713Z'
+                    started: '2023-03-26T15:27:30.124Z'
+                    completed: '2023-03-26T15:27:43.250Z'
+                    status: completed
+                    quantity: 2
+                    duplicates: 0
+                    credits: 2
+                    processed: 2
+                    stats:
+                      deliverable: 1
+                      risky: 0
+                      undeliverable: 1
+                      unknown: 0
+        '404':
+          description: Not Found
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '404'
+                error: Not Found
+                message: request 1l2k3k4j5h does not exist
+        '429':
+          description: Too Many Requests
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 429
+                error: Too Many Requests
+                message: too many requests
+    delete:
+      tags:
+        - batch
+      summary: Delete request
+      description: Delete emails associated with request. Results will be lost.
+      parameters:
+        - name: batchId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example: {}
+        '404':
+          description: Not Found
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '404'
+                error: Not Found
+                message: request 1l2k3k4j5h does not exist
+        '405':
+          description: Method Not Allowed
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '405'
+                error: Method Not Allowed
+                message: batch cannot be deleted in current state
+  /v1.1/email/verify/batch/{batchId}/finish:
+    post:
+      tags:
+        - batch
+      summary: Finish
+      description: >-
+        This endpoint will trigger internal job which will finish processing and
+        return credits for remaining not verified emails.
+
+
+        Results can be downloaded once status endpoint will return status
+        "completed".
+      requestBody:
+        content: {}
+      parameters:
+        - name: batchId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '400'
+                error: Bad Request
+                message: batch has to be running to finish
+        '202':
+          description: Accepted
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example: {}
+  /v1.1/email/verify/batch/{batchId}/download:
+    get:
+      tags:
+        - batch
+      summary: Get results
+      description: >-
+        Download batch result as JSON. You can filter out what to download by
+        status, eg. download only deliverable emails.
+      parameters:
+        - name: download
+          in: query
+          schema:
+            type: string
+          description: >-
+            download emails by status, possible values: all, deliverable,
+            undeliverable, unknown
+          example: all
+        - name: batchId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - email: john@usebouncer.com
+                  name: John Doe
+                  status: deliverable
+                  reason: accepted_email
+                  domain:
+                    name: usebouncer.com
+                    acceptAll: 'no'
+                    disposable: 'no'
+                    free: 'no'
+                  account:
+                    role: 'no'
+                    disabled: 'no'
+                    fullMailbox: 'no'
+                  dns:
+                    type: MX
+                    record: aspmx.l.google.com.
+                  provider: google.com
+                  score: 100
+                  toxic: unknown
+                - email: jane@usebouncer.com
+                  status: deliverable
+                  reason: accepted_email
+                  domain:
+                    name: usebouncer.com
+                    acceptAll: 'no'
+                    disposable: 'no'
+                    free: 'no'
+                  account:
+                    role: 'no'
+                    disabled: 'no'
+                    fullMailbox: 'no'
+                  dns:
+                    type: MX
+                    record: aspmx.l.google.com.
+                  provider: google.com
+                  score: 100
+                  toxic: unknown
+        '404':
+          description: Not Found
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '404'
+                error: Not Found
+                message: request 1l2k3k4j5h does not exist
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '405'
+                error: Method Not Allowed
+                message: batch is not completed
+  /v1.1/email/verify/batch/sync:
+    post:
+      tags:
+        - batch-sync
+      summary: Create simple batch request
+      description: >-
+        Verifies one or multiple emails in a batch, offline manner.
+
+
+        This method is recommended when quality of verification is of a value
+        and integration needs to be easy to implement.
+
+
+        Provide array of email addresses (max 10k), for example:
+
+
+        ``` json
+        [  
+            "jane@usebouncer.com", 
+            "john@usebouncer.com"  
+        ]  
+        ```
+
+
+        If result for specific email is not present in the response please retry
+        (passing the same email in the array) in a while (15s - 10min).
+
+
+        Response will contain results for emails for which status is already
+        known.
+
+
+        In the next pass you can send some of remaining emails without response
+        and some of the new ones.
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "[\n    \"jane@usebouncer.com\",\n   
+                \"john@usebouncer.com\"\n]"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - email: jane@usebouncer.com
+                  status: undeliverable
+                  reason: rejected_email
+                  domain:
+                    name: usebouncer.com
+                    acceptAll: 'no'
+                    disposable: 'no'
+                    free: 'no'
+                  account:
+                    role: 'no'
+                    disabled: 'no'
+                    fullMailbox: 'no'
+                  dns:
+                    type: MX
+                    record: aspmx.l.google.com.
+                  provider: google.com
+                  score: 0
+                  toxic: unknown
+        '400':
+          description: Bad Request
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '404'
+                error: Bad Request
+                message: too many emails
+        '402':
+          description: Payment Required
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '402'
+                error: Payment Required
+                message: 13 credits left
+        '429':
+          description: Too Many Requests
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 429
+                error: Too Many Requests
+                message: too many requests
+  /v1/toxicity/list:
+    post:
+      tags:
+        - toxicity
+      summary: Create toxicity list job
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "[\n    \"jane@usebouncer.com\",\n   
+                \"john@usebouncer.com\"\n]"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: 61c69f7907cbda25bc76f7e4
+                createdAt: '2023-01-17T13:15:37.563Z'
+                status: processing
+        '402':
+          description: Payment Required
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 402
+                error: Payment Required
+                message: not enough credits, 2 required
+        '429':
+          description: Too Many Requests
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 429
+                error: Too Many Requests
+                message: too many requests
+  /v1/toxicity/list/{id}:
+    get:
+      tags:
+        - toxicity
+      summary: Check toxicity list job status
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-0:
+                  summary: OK
+                  value:
+                    id: 61c69f7907cbda25bc76f7e4
+                    createdAt: '2023-01-17T13:15:37.563Z'
+                    status: completed
+                example-1:
+                  summary: Error (processing failed)
+                  value:
+                    id: 61c69f7907cbda25bc76f7e4
+                    createdAt: '2023-01-17T13:15:37.563Z'
+                    status: error
+    delete:
+      tags:
+        - toxicity
+      summary: Delete toxicity list job
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example: {}
+        '404':
+          description: Not Found
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 404
+                error: Not Found
+                message: list not found
+  /v1/toxicity/list/{id}/data:
+    get:
+      tags:
+        - toxicity
+      summary: Download toxicity list results
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - email: jane@usebouncer.com
+                  toxicity: 0
+                - email: hello@usebouncer.com
+                  toxicity: 1
+        '400':
+          description: Bad Request
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 400
+                error: Bad Request
+                message: processing is not completed yet
+        '404':
+          description: Not Found
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 404
+                error: Not Found
+                message: list not found
+  /v1.1/domain:
+    get:
+      tags:
+        - domain
+      summary: Verify domain
+      description: >-
+        Verifies single domain.
+
+
+        One credit will be charged.
+
+
+        **Rate Limiting**
+
+
+        Domain Verification API is limited to 1000 requests per minute by
+        default. If your use case requires higher limits, please let us know.
+      parameters:
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: usebouncer.com
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                domain:
+                  name: usebouncer.com
+                  acceptAll: 'no'
+                  disposable: 'no'
+                  free: 'no'
+                dns:
+                  type: MX
+                  record: aspmx.l.google.com.
+                provider: google.com
+                toxic: unknown
+        '402':
+          description: Payment Required
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: '402'
+                error: Payment Required
+                message: 0 credits left
+        '403':
+          description: Forbidden
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                status: 429
+                error: Too Many Requests
+                message: too many requests

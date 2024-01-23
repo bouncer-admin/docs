@@ -1,0 +1,34 @@
+---
+openapi: get /v1.1/email/verify/batch/{batchId}
+---
+
+Field "credits" will be filled with number of credits used once batch is
+complete.
+
+
+Additional query parameter "with-stats=true" will add to the response
+processing progress and statistics.
+
+
+``` json
+
+{
+    "batchId": "642152127eec9c46c00fb8d7",
+    "created": "2023-03-27T08:21:38.357Z",
+    "started": "2023-03-27T08:21:40.355Z",
+    "completed": "2023-03-27T08:21:51.426Z",
+    "status": "completed",
+    "quantity": 2,
+    "duplicates": 0,
+    "credits": 2,
+    "processed": 2,
+    "stats": {
+        "deliverable": 1,
+        "risky": 0,
+        "undeliverable": 1,
+        "unknown": 0
+    }
+}
+
+
+```
