@@ -1,3 +1,22 @@
 ---
 openapi: get /v1.1/email/verify
 ---
+
+Bouncer will return best possible results that it will be able to gather
+within 10 seconds (maximum 30).
+
+
+This method is recommended when speed of verification is of a value as
+usually this method returns 5% more “unknown” results than full
+integration using Batch Email Verification API.
+
+
+**Rate Limiting**
+
+Real-Time Email Verification API is limited to 1000 requests per minute
+by default. Higher limit can be configured in special cases.
+
+**Retry After**
+
+In cases when we may provide results after greylisting additional
+parameter "retryAfter" will be added.

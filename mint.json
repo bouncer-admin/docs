@@ -16,6 +16,11 @@
       "tagId": "GTM-MSFJ4SF"
     }
   },
+  "api": {
+    "playground": {
+      "mode": "show"
+    }
+  },
   "openapi": [
     "/api-reference/openapi.yml"
   ],
