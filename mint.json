@@ -70,7 +70,7 @@
     {
       "group": "Credits",
       "pages": [
-        "api-reference/credits/check-available-credits"
+        "api-reference/credits/credits"
       ]
     },
     {
@@ -82,26 +82,26 @@
     {
       "group": "Batch",
       "pages": [
-        "api-reference/batch/create-batch-request",
-        "api-reference/batch/check-status",
-        "api-reference/batch/delete-request",
-        "api-reference/batch/finish",
-        "api-reference/batch/get-results"
+        "api-reference/batch/batch-create",
+        "api-reference/batch/batch-status",
+        "api-reference/batch/batch-delete",
+        "api-reference/batch/batch-finish",
+        "api-reference/batch/batch-results"
       ]
     },
     {
       "group": "Batch Sync",
       "pages": [
-        "api-reference/batch-sync/create-simple-batch-request"
+        "api-reference/batch-sync/batch-sync"
       ]
     },
     {
       "group": "Toxicity",
       "pages": [
-        "api-reference/toxicity/create-toxicity-list-job",
-        "api-reference/toxicity/check-toxicity-list-job-status",
-        "api-reference/toxicity/delete-toxicity-list-job",
-        "api-reference/toxicity/download-toxicity-list-results"
+        "api-reference/toxicity/toxicity-create",
+        "api-reference/toxicity/toxicity-status",
+        "api-reference/toxicity/toxicity-delete",
+        "api-reference/toxicity/toxicity-results"
       ]
     },
     {

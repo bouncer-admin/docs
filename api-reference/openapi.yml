@@ -29,95 +29,6 @@ components:
 security:
   - apikeyAuth: []
 tags:
-  - name: credits
-    description: >-
-      Information about credits. You can use this endpoint to check how many
-      email verification credits are available at your account.
-  - name: real-time
-    description: >-
-      You can use Bouncer’s Real-time Email Verification API to check email
-      addresses at the moment of entry, and implement it for your sing up forms.
-
-
-      It is a full email verification and email validation method – it not only
-      checks the syntax and domain of the address but also contacts underlying
-      SMTP servers to check deliverability of email addresses.
-  - name: batch
-    description: >-
-      If you need to verify multiple email addresses in a batch, you can use our
-      Batch Email Verification API.
-
-
-      Bouncer distributed infrastructure will make sure to get best possible
-      results and retry any verification in case one is required.
-
-
-      **Speed**
-
-
-      Default settings allow our customers to verify 100-200k email addresses
-      per hour, however if your use case requires higher throughput, please let
-      us know and we will be able to adjust your configuration.
-
-
-      **Rate Limiting**
-
-
-      The Batch Email Verification API is limited to creating up to 60 batches
-      per minute and 200 requests to other related endpoints.
-
-
-      **Batch size recommendation**
-
-
-      Single batch can process up to 100,000 emails, while recommended size
-      would be anything between 1000-10000 emails.
-  - name: batch-sync
-    description: >-
-      If you need to verify multiple email addresses in a batch, but you prefer
-      synchronous integrations you can use our Synchronous Batch Email
-      Verification API.
-
-
-      Bouncer distributed infrastructure will make sure to get best possible
-      results and retry any verification in case one is required.
-
-
-      **Speed**
-
-
-      Default settings allow our customers to verify 100k email addresses per
-      hour, however if your use case requires higher throughput, please let us
-      know and we will be able to adjust your configuration.
-
-
-      **Rate Limiting**
-
-
-      The Batch Sync Email Verification API is limited to 10 requests per minute
-      by default.
-
-
-      **Batch size recommendation**
-
-
-      Single request can hold up to 10,000 emails.
-
-
-      **Special considerations**
-
-
-      Requests should be sent sequentially with delay between requests of 15sec
-      to 10min.
-
-
-      Results are kept up to 24h in Bouncer. After that delay email will be
-      verified again and credits will be charged.
-  - name: toxicity
-    description: |-
-      **Rate Limiting**
-
-      API allows creating of 10 lists per minute.
   - name: domain
     description: >-
       You can use Bouncer’s Domain Verification API to check domain information.
@@ -676,9 +587,8 @@ paths:
           application/json:
             schema:
               type: string
-              example: >-
-                "[\n    \"jane@usebouncer.com\",\n   
-                \"john@usebouncer.com\"\n]"
+              example:
+                ["jane@usebouncer.com","john@usebouncer.com"]
       parameters:
         - name: Content-Type
           in: header
@@ -768,12 +678,11 @@ paths:
       summary: Create toxicity list job
       requestBody:
         content:
-          '*/*':
+          application/json:
             schema:
               type: string
-              example: >-
-                "[\n    \"jane@usebouncer.com\",\n   
-                \"john@usebouncer.com\"\n]"
+              example:
+                ["jane@usebouncer.com","john@usebouncer.com"]
       parameters:
         - name: Content-Type
           in: header
@@ -966,18 +875,10 @@ paths:
       description: >-
         Verifies single domain.
 
-
-        One credit will be charged.
-
-
-        **Rate Limiting**
-
-
-        Domain Verification API is limited to 1000 requests per minute by
-        default. If your use case requires higher limits, please let us know.
       parameters:
         - name: domain
           in: query
+          required: true
           schema:
             type: string
           example: usebouncer.com

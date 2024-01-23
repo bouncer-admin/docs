@@ -1,18 +1,16 @@
 ---
 openapi: post /v1.1/email/verify/batch
 ---
+If you need to verify multiple email addresses in a batch, you can use our
+Batch Email Verification API.
 
-This method is recommended when the quality of verification is of a
-value as it characterises the best precision of email validation and the
-lowest possible amount of “unknown” results.
-
+Bouncer distributed infrastructure will make sure to get best possible
+results and retry any verification in case one is required.
 
 Provide array of email addresses, with names if needed (optional).
 
-
 Names will be returned in the response data and can also be used to pass
 your internal ID.
-
 
 For example:
 
@@ -31,16 +29,32 @@ For example:
 Please make sure to store batchId as it will be necessary to check
 status and get results for the request.
 
+**Speed**
+
+Default settings allow our customers to verify 100-200k email addresses
+per hour, however if your use case requires higher throughput, please let
+us know and we will be able to adjust your configuration.
+
+**Rate Limiting**
+
+The Batch Email Verification API is limited to creating up to 60 batches
+per minute and 200 requests to other related endpoints.
+
+**Batch size recommendation**
+
+Single batch can process up to 100,000 emails, while recommended size
+would be anything between 1000-10000 emails.
+
+This method is recommended when the quality of verification is of a
+value as it characterises the best precision of email validation and the
+lowest possible amount of “unknown” results.
 
 **Integration flow**
-
 
 There are 2 ways to integrate with batch, using status endpoint or using
 callback parameter.
 
-
 Up to 25 batches will be processed in parallel.
-
 
 _**Using Status Endpoint**_
 

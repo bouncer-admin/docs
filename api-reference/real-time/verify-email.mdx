@@ -2,9 +2,16 @@
 openapi: get /v1.1/email/verify
 ---
 
+You can use Bouncer’s Real-time Email Verification API to check email
+addresses at the moment of entry, and implement it for your sing up forms.
+
+
+It is a full email verification and email validation method – it not only
+checks the syntax and domain of the address but also contacts underlying
+SMTP servers to check deliverability of email addresses.
+
 Bouncer will return best possible results that it will be able to gather
 within 10 seconds (maximum 30).
-
 
 This method is recommended when speed of verification is of a value as
 usually this method returns 5% more “unknown” results than full
