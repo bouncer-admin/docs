@@ -42,16 +42,6 @@
   ],
   "anchors": [
     {
-      "name": "FAQ",
-      "icon": "block-question",
-      "url": "https://www.usebouncer.com/faq/"
-    },
-    {
-      "name": "Privacy Policy",
-      "icon": "lock",
-      "url": "https://www.usebouncer.com/privacy-policy/"
-    },
-    {
       "name": "Status",
       "icon": "signal-bars",
       "url": "https://status.usebouncer.com/"

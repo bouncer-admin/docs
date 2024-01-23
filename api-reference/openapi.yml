@@ -239,12 +239,6 @@ paths:
                 {"email": "jenny@usebouncer.com"}
                 ]
       parameters:
-        - name: Content-Type
-          in: header
-          required: true
-          schema:
-            type: string
-          example: application/json
         - name: callback
           in: query
           required: false
