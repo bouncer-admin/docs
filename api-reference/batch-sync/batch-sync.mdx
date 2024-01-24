@@ -6,38 +6,27 @@ If you need to verify multiple email addresses in a batch, but you prefer
 synchronous integrations you can use our Synchronous Batch Email
 Verification API.
 
-
-Bouncer distributed infrastructure will make sure to get best possible
-results and retry any verification in case one is required.
-
+Each request adds new emails to batch processing queue, and returns response when result is known.
 
 **Speed**
-
 
 Default settings allow our customers to verify 100k email addresses per
 hour, however if your use case requires higher throughput, please let us
 know and we will be able to adjust your configuration.
 
-
 **Rate Limiting**
-
 
 The Batch Sync Email Verification API is limited to 10 requests per minute
 by default.
 
-
 **Batch size recommendation**
-
 
 Single request can hold up to 10,000 emails.
 
-
 **Special considerations**
-
 
 Requests should be sent sequentially with delay between requests of 15sec
 to 10min.
-
 
 Results are kept up to 24h in Bouncer. After that delay email will be
 verified again and credits will be charged.

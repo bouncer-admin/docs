@@ -26,6 +26,51 @@ components:
       type: apiKey
       in: header
       name: x-api-key
+  schemas:
+    EmailRecord:
+      type: object
+      properties:
+        email:
+          type: string
+        status:
+          type: string
+        reason:
+          type: string
+        domain:
+          type: object
+          properties:
+            name:
+              type: string
+            acceptAll:
+              type: string
+            disposable:
+              type: string
+            free:
+              type: string
+        account:
+          type: object
+          properties:
+            role:
+              type: string
+            disabled:
+              type: string
+            fullMailbox:
+              type: string
+        dns:
+          type: object
+          properties:
+            type:
+              type: string
+            record:
+              type: string
+        provider:
+          type: string
+        score:
+          type: integer
+        toxic:
+          type: string
+        retryAfter:
+          type: string
 security:
   - apikeyAuth: []
 tags:
@@ -119,7 +164,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/EmailRecord'
               examples:
                 example-0:
                   summary: OK
@@ -573,14 +618,16 @@ paths:
     post:
       tags:
         - batch-sync
-      summary: Create simple batch request
+      summary: Process with email verification queue
       description: >-
         Synchronous Batch Email Verification API verifies one or multiple emails in a batch, offline manner.
       requestBody:
         content:
           application/json:
             schema:
-              type: string
+              type: array
+              items:
+                type: string
               example:
                 ["jane@usebouncer.com","john@usebouncer.com"]
       parameters:
@@ -600,7 +647,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmailRecord'
               example:
                 - email: jane@usebouncer.com
                   status: undeliverable
