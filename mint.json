@@ -2,14 +2,14 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Bouncer",
   "logo": {
-    "light": "/logo/light.png",
-    "dark": "/logo/dark.png"
+    "light": "/logo/logo-new-light.svg",
+    "dark": "/logo/logo-new-dark.svg"
   },
-  "favicon": "/favicon.png",
+  "favicon": "/favicon.ico",
   "colors": {
-    "primary": "#01a4c6",
-    "light": "#45C3DE",
-    "dark": "#01a4c6"
+    "primary": "#26ad7a",
+    "light": "#26ad7a",
+    "dark": "#26ad7a"
   },
   "analytics": {
     "gtm": {
