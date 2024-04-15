@@ -344,6 +344,12 @@ paths:
             type: string
           required: true
           description: batchId from create response
+        - name: with-stats
+          in: query
+          schema:
+            type: boolean
+          description: 'collect additional processing statistics'
+          example: true
       responses:
         '200':
           description: OK
