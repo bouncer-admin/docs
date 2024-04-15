@@ -5,6 +5,33 @@ description: Bouncer Email Verification API lets you validate email address and 
 
 It’s easy to integrate, powerful, robust, secure, ultrafast and affordable.
 
+```json
+{
+  "email": "hello@usebouncer.com",
+  "status": "deliverable",
+  "reason": "accepted_email",
+  "domain": {
+    "name": "usebouncer.com",
+    "acceptAll": "no",
+    "disposable": "no",
+    "free": "no"
+  },
+  "account": {
+    "role": "yes",
+    "disabled": "no",
+    "fullMailbox": "no"
+  },
+  "dns": {
+    "type": "MX",
+    "record": "aspmx.l.google.com."
+  },
+  "provider": "google.com",
+  "score": 100,
+  "toxic": "unknown",
+  "toxicity": 0
+}
+```
+
 Let Bouncer handle verification and validation of your email addresses, with Real-Time (synchronous), Batch (asynchronous), and a hybrid of those two Batch Synchronous end-points.
 
 If at any time you would need extra support from our side, you can reach us by email at : support@usebouncer.com

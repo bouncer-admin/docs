@@ -2,6 +2,33 @@
 title: Terminology
 ---
 
+```json
+{
+  "email": "hello@usebouncer.com",
+  "status": "deliverable",
+  "reason": "accepted_email",
+  "domain": {
+    "name": "usebouncer.com",
+    "acceptAll": "no",
+    "disposable": "no",
+    "free": "no"
+  },
+  "account": {
+    "role": "yes",
+    "disabled": "no",
+    "fullMailbox": "no"
+  },
+  "dns": {
+    "type": "MX",
+    "record": "aspmx.l.google.com."
+  },
+  "provider": "google.com",
+  "score": 100,
+  "toxic": "unknown",
+  "toxicity": 0
+}
+```
+
 ## Statuses
 Every email address that you verify, will come back with a result that is either 'deliverable', 'undeliverable', 'risky' or 'unknown'. Below is a short explanation of what each means:
 
