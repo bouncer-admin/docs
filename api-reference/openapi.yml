@@ -178,7 +178,6 @@ paths:
                   summary: OK
                   value:
                     email: john@usebouncer.com
-                    name: John Doe
                     status: deliverable
                     reason: accepted_email
                     domain:
@@ -200,7 +199,6 @@ paths:
                   summary: OK (timeout)
                   value:
                     email: john@usebouncer.com
-                    name: John Doe
                     status: unknown
                     reason: timeout
                     domain:
@@ -220,7 +218,6 @@ paths:
                   summary: OK (greylisting)
                   value:
                     email: john@usebouncer.com
-                    name: John Doe
                     status: unknown
                     reason: timeout
                     domain:
@@ -288,7 +285,7 @@ paths:
               type: string
               example:
                 [
-                {"email": "john@usebouncer.com", "name": "John Doe"},
+                {"email": "john@usebouncer.com"},
                 {"email": "jenny@usebouncer.com"}
                 ]
       parameters:
@@ -567,7 +564,6 @@ paths:
                 type: object
               example:
                 - email: john@usebouncer.com
-                  name: John Doe
                   status: deliverable
                   reason: accepted_email
                   domain:
