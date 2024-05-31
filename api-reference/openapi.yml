@@ -256,8 +256,8 @@ paths:
                 status: '402'
                 error: Payment Required
                 message: 0 credits left
-        '403':
-          description: Forbidden
+        '429':
+          description: Too Many Requests
           headers:
             Content-Type:
               schema:
@@ -312,8 +312,8 @@ paths:
                 status: queued
                 quantity: 2
                 duplicates: 0
-        '403':
-          description: Forbidden
+        '402':
+          description: Payment Required
           headers:
             Content-Type:
               schema:
@@ -973,8 +973,8 @@ paths:
                 status: '402'
                 error: Payment Required
                 message: 0 credits left
-        '403':
-          description: Forbidden
+        '429':
+          description: Too Many Requests
           headers:
             Content-Type:
               schema:
