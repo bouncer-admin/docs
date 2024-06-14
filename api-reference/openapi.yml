@@ -27,6 +27,13 @@ components:
       in: header
       name: x-api-key
   schemas:
+    EmailRequest:
+      type: array
+      items:
+        type: object
+        properties:
+          email:
+            type: string
     EmailRecord:
       type: object
       properties:
@@ -73,6 +80,51 @@ components:
           type: integer
         retryAfter:
           type: string
+    BatchSample:
+      type: object
+      properties:
+        id:
+          type: string
+        finished:
+          type: boolean
+        emails:
+          type: integer
+        sampled:
+          type: integer
+        analysed:
+          type: object
+          properties:
+            count:
+              type: integer
+            undeliverable:
+              type: integer
+            unknown:
+              type: integer
+            disposable:
+              type: integer
+            acceptAll:
+              type: integer
+            role:
+              type: integer
+            toxic:
+              type: integer
+        bounceEstimate:
+          type: number
+        toxicity:
+          type: object
+          properties:
+            0:
+              type: integer
+            1:
+              type: integer
+            2:
+              type: integer
+            3:
+              type: integer
+            4:
+              type: integer
+            5:
+              type: integer
 security:
   - apikeyAuth: []
 tags:
@@ -724,6 +776,92 @@ paths:
                 status: 429
                 error: Too Many Requests
                 message: too many requests
+  /v1/email/verify/batch/sample:
+    post:
+      tags:
+        - sampling
+      summary: Create batch sampling request
+      description: >-
+        Creates sampling batch
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/EmailRequest'
+            example:
+              [
+                {"email": "john@usebouncer.com"},
+                {"email": "jenny@usebouncer.com"}
+              ]
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchSample'
+              example:
+                id: "666c3e25d4e24d32c918f876"
+                finished: false
+                emails: 3
+                sampled: 3
+                analysed:
+                  count: 0
+                  undeliverable: 0
+                  unknown: 0
+                  disposable: 0
+                  acceptAll: 0
+                  role: 0
+                  toxic: 0
+                bounceEstimate: 0.0
+                toxicity:
+                  0: 0
+                  1: 0
+                  2: 0
+                  3: 0
+                  4: 0
+                  5: 0
+  /v1/email/verify/batch/sample/{id}:
+    get:
+      tags:
+        - sampling
+      summary: Get batch sampling request status
+      description: >-
+        Get sampling batch status
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: "666c3e25d4e24d32c918f876"
+                finished: true
+                emails: 3
+                sampled: 3
+                analysed:
+                  count: 3
+                  undeliverable: 1
+                  unknown: 0
+                  disposable: 0
+                  acceptAll: 0
+                  role: 0
+                  toxic: 0
+                bounceEstimate: 33.0
+                toxicity:
+                  0: 2
+                  3: 1
   /v1/toxicity/list:
     post:
       tags:
