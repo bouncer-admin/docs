@@ -241,6 +241,7 @@ paths:
                     provider: google.com
                     score: 100
                     toxic: unknown
+                    toxicity: 0
                 example-1:
                   summary: OK (timeout)
                   value:
@@ -260,6 +261,7 @@ paths:
                       type: MX
                       record: aspmx.l.google.com.
                     provider: google.com
+                    toxicity: 0
                 example-2:
                   summary: OK (greylisting)
                   value:
@@ -627,6 +629,7 @@ paths:
                   provider: google.com
                   score: 100
                   toxic: unknown
+                  toxicity: 0
                 - email: jane@usebouncer.com
                   status: deliverable
                   reason: accepted_email
@@ -645,6 +648,7 @@ paths:
                   provider: google.com
                   score: 100
                   toxic: unknown
+                  toxicity: 0
         '404':
           description: Not Found
           headers:
@@ -725,6 +729,7 @@ paths:
                   provider: google.com
                   score: 0
                   toxic: unknown
+                  toxicity: 0
         '400':
           description: Bad Request
           headers:
