@@ -201,12 +201,6 @@ paths:
             type: string
           description: (Required) email
           example: hello@usebouncer.com
-        - name: with-toxicity
-          in: query
-          schema:
-            type: boolean
-          description: 'perform additional toxicity check - one additional credit will be used'
-          example: true
         - name: timeout
           in: query
           schema:
