@@ -23,15 +23,23 @@ Bouncer API supports 2 methods of authentication:
 
 ### x-api-key in header
 
-```bash bash 
-curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com -H 'x-api-key: API-KEY'
+```bash
+curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com \
+  -H 'x-api-key: API-KEY'
 ```
 
 ### "Basic" authentication with api key as password
 
-```bash bash
-curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com -u :API-KEY
+```bash
+curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com \
+  -u :API-KEY
 ```
+
+## Test Data
+
+Sandbox emails can be used free of charge during implementation of integration.
+
+[Sandbox](/sandbox)
 
 ## Error Handling
 The API makes use of standard HTTP errors to indicate the success or failure of a request. The 2xx series of response codes indicate a success, 4xx indicates an error from the client side, and a 5xx error indicates a server-side error. Here are the HTTP response codes the API utilises:

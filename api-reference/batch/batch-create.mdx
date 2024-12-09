@@ -7,11 +7,6 @@ Batch Email Verification API.
 Bouncer distributed infrastructure will make sure to get best possible
 results and retry any verification in case one is required.
 
-Provide array of email addresses, with names if needed (optional).
-
-Names will be returned in the response data and can also be used to pass
-your internal ID.
-
 For example:
 
 
@@ -49,12 +44,30 @@ This method is recommended when the quality of verification is of a
 value as it characterises the best precision of email validation and the
 lowest possible amount of “unknown” results.
 
+**CSV format support**
+
+Batch can also be created using txt file, with one email per file, and then results downloaded as csv file.
+
+Example file content
+
+```txt
+deliverable@sandbox.usebouncer.com
+deliverable+2@sandbox.usebouncer.com
+deliverable+3@sandbox.usebouncer.com
+undeliverable@sandbox.usebouncer.com
+```
+
+```bash
+curl -v https://api.usebouncer.com/v1.1/email/verify/batch\?skip-header\=false \
+  --data-binary "@./test.csv" \
+  -H "x-api-key: <api-key>" \
+  -H 'Content-Type: text/plain'
+```
+
 **Integration flow**
 
 There are 2 ways to integrate with batch, using status endpoint or using
 callback parameter.
-
-Up to 25 batches will be processed in parallel.
 
 _**Using Status Endpoint**_
 

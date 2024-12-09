@@ -1,3 +1,16 @@
 ---
 openapi: get /v1.1/email/verify/batch/{batchId}/download
 ---
+
+By default results are downloaded in JSON format.
+
+
+**CSV format support**
+
+Results can also be downloaded as CSV file by passing 'Accept' header.
+
+```bash
+curl https://api.usebouncer.com/v1.1/email/verify/batch/<BATCH_ID>/download \
+  -H "x-api-key: <api-key>" \
+  -H 'Accept: text/csv'
+```
