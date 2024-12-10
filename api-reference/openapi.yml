@@ -201,10 +201,12 @@ paths:
             type: string
           description: (Required) email
           example: hello@usebouncer.com
+          required: true
         - name: timeout
           in: query
           schema:
             type: integer
+            default: 10
           description: 'timeout for verification (default: 10)'
           example: '10'
       responses:
@@ -327,6 +329,7 @@ paths:
       description: >-
         Verifies one or multiple emails in a batch, offline manner.  
       requestBody:
+        required: true
         content:
           'application/json':
             schema:
@@ -393,6 +396,7 @@ paths:
           in: query
           schema:
             type: boolean
+            default: false
           description: 'collect additional processing statistics'
           example: true
       responses:
