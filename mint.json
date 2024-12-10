@@ -52,7 +52,8 @@
       "group": "Welcome to Bouncer",
       "pages": [
         "introduction",
-        "getting-started",
+        "quick-start",
+        "integration-guidelines",
         "terminology",
         "sandbox"
       ]

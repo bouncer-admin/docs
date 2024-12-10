@@ -1,0 +1,150 @@
+---
+title: Integration Guidelines
+---
+
+## Which API should I choose?
+
+### Real-Time
+
+Real-Time API endpoint should be used response time is crucial.
+
+It is easiest to use, but has some drawbacks which make it unsuitable to verify large databases.
+
+Rate limit limits number of emails that can be verified per hour.
+Some emails require retries or long SMTP connections taking over 40 seconds which causes more unknown results.
+
+[API Reference](/api-reference/real-time/verify-email)
+
+### Batch
+
+Bouncer can process maximum volume of emails using this API.
+Implementation is a bit more complicated than using Real-Time API though.
+
+Integration flow in pseudocode.
+
+```javascript
+// psuedocode
+
+while(true) {
+
+  // check status of active batches (created and not completed)
+  var batchesActive = getActiveBatches();
+
+  // create batches
+  if (batchesActive.size() < 10) {
+    // create batch if needed
+    var emailsToVerify = prepareBatchOfEmailsToVerify();
+    if (emailsToVerify.size() > 0) {
+      try {
+        var batchStatus = bouncer.batchCreate(emailToVerify);
+        storeBatchInformation(batchStatus.batchId, 'active');
+      } catch(error) {
+        // handle special cases (payment required, rate limit, 5XX errors)
+      }
+    }
+  }
+
+  // check status and download results
+  batchesActive.forEach(batch => {
+    var batchStatus = bouncer.batchStatus(batch.batchId);
+    if (batchStatus.status === 'completed') {
+      // download results
+      var batchResults = bouncer.batchResults(batch.batchId);
+      storeBatchResults(batch.batchId, batchResults);
+      storeBatchInformation(batch.batchId, 'done')
+    }
+  });
+
+  sleepSeconds(10);
+}
+```
+
+Considerations:
+- batches are processed sequentially, so when batch with 100000 emails is sent next batch with 1000 emails will have to wait
+
+### Batch/Sync
+
+This API is similar to Batch API, with some additional features:
+- there is no need to remember batch id
+- internal queue is kept internally
+- there is no need for batch to finish to get some of the results
+- it keeps 24h cache, so it doesn't verify the same email multiple times in this timeframe
+
+Best way to implement integration using batch/sync endpoint, would be to create a queue of emails to be verified.
+In some kind of pseudocode it would look like this.
+
+```javascript
+// psuedocode
+
+while(true) {
+
+  var emailsToVerify = sql('select email from queue where result == null order by queuedAt limit 10000');
+  if (emailsToVerify.size() == 0) {
+    sleepSeconds(10);
+  }
+  try {
+    var results = bouncer.batchSync(emailToVerify);
+    updateQueueWithResults(results);
+    sleepSeconds(3);
+  } catch(error) {
+    // handle special cases (payment required, rate limit, 5XX errors)
+  }
+}
+```
+
+## Implementation
+
+### Implement Bouncer API Client
+
+#### SDK
+
+When using Java as your programming language our client library can be used.
+
+https://github.com/bouncer-admin/bouncer-java-sdk
+
+It can be used as is, or modified to match your tech stack and dependencies.
+
+#### Encoding
+
+When using real-time
+- make sure that '+' is encoded properly
+otherwise bouncer will receive 'test+123@usebouncer.com' as 'test 123@usebouncer.com' and return undeliverable invalid_email
+
+When using batch
+- '\' is a special character in json and "deliverable+6@sandbox.usebouncer.com\" is not a valid json value
+
+
+### Error Handling
+
+The API makes use of standard HTTP errors to indicate the success or failure of a request. The 2xx series of response codes indicate a success, 4xx indicates an error from the client side, and a 5xx error indicates a server-side error. Here are the HTTP response codes the API utilises:
+
+- 200 Success
+- 400 Bad Request
+- 401 Unauthorized
+- 402 Payment Required
+- 403 Forbidden
+- 404 Not Found
+- 429 Too Many Requests
+- 503 Service Unavailable
+
+#### Cases to handle while implementing integration:
+
+- Status code 402 - Account does not have enough credits to handle request. Purchase is required. Other way to handle this is to configure email alerts or auto-refill available with subscription.
+- Status code 429 - Request have been rate limited. Too many requests have been sent.
+- Status code 503 - In some edge cases it's possible that response with status code 503 will be returned. In that case retry should solve the problem.
+
+## How to interpret results?
+
+In different use cases different rules may be applied to decide which emails should be kept or removed.
+
+Keep:
+- status deliverable
+- if your deliverability is not impacted and list is relatively clean
+    - status risky and flag domain.acceptAll "yes"
+    - status unknown with reasons unknown, timeout, unsupported
+
+Remove/Suppress:
+- status undeliverable
+- toxicity with values 4 and 5 (they may impact your sending infrastructure reputation)
+- status risky with flag account.fullMailbox "yes"
+

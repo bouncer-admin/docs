@@ -1,0 +1,45 @@
+---
+title: Quick Start
+---
+
+## Authentication
+
+All calls made to the Bouncer API have to be made using HTTPS.
+
+In order to generate your API Key go [here](https://app.usebouncer.com/signup) or:
+
+- sign up for a Bouncer account [here](https://app.usebouncer.com/login),
+- click on the API on the left-site menu,
+- click Generate API Key button.
+
+Bouncer API supports 2 methods of authentication:
+
+### x-api-key in header
+
+```bash
+curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com \
+  -H 'x-api-key: API-KEY'
+```
+
+### "Basic" authentication with api key as password
+
+```bash
+curl https://api.usebouncer.com/v1.1/email/verify?email=john@usebouncer.com \
+  -u :API-KEY
+```
+
+## API Reference
+
+Interactive API Reference can be used to send first requests.
+
+[API Reference](/api-reference/real-time/verify-email)
+
+## Test Data
+
+Sandbox emails can be used free of charge during implementation of integration.
+
+[Sandbox](/sandbox)
+
+## Integration Guidelines
+
+For more comprehensive integration guidelines please read [Integration Guidelines](/integration-guidelines).
