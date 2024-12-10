@@ -125,10 +125,3 @@ Please note it was not fully verified, so you might want to run a verification o
 Score represents chance for successful delivery of email. 100 means 100% chance of delivery, given sending infrastructure has good reputation.
 
 Empty value means that it wouldn't make sense to evaluate score, for example in the case of timeout.
-
-## Toxic
-If toxicity has been checked this flag will have one of the values "yes", "no", "unknown". Meaning of which are as follows:
-
-- yes - email or its domain has been found in one of our lists which indicate that it was involved in spam, abusing, is owned by a litigator or a complainer, or is a spam trap
-- no - it has not been found on any of our email toxicity lists
-- unknown - it has not been found on any of our lists, although it may be ambiguous
