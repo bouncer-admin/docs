@@ -31,40 +31,95 @@ components:
       type: array
       items:
         type: object
+        required:
+          - email
         properties:
           email:
             type: string
     EmailRecord:
       type: object
+      additionalProperties: false
+      required:
+        - email
+        - status
+        - reason
       properties:
         email:
           type: string
         status:
-          type: string
+          enum:
+            - deliverable
+            - risky
+            - undeliverable
+            - unknown
         reason:
-          type: string
+          enum:
+            - accepted_email
+            - low_deliverability
+            - low_quality
+            - invalid_email
+            - invalid_domain
+            - rejected_email
+            - dns_error
+            - unavailable_smtp
+            - unsupported
+            - timeout
+            - unknown
         domain:
           type: object
+          additionalProperties: false
+          required:
+            - name
+            - acceptAll
+            - disposable
+            - free
           properties:
             name:
               type: string
             acceptAll:
-              type: string
+              enum:
+                - yes
+                - no
+                - unknown
             disposable:
-              type: string
+              enum:
+                - yes
+                - no
+                - unknown
             free:
-              type: string
+              enum:
+                - yes
+                - no
+                - unknown
         account:
           type: object
+          additionalProperties: false
+          required:
+            - role
+            - disabled
+            - fullMailbox
           properties:
             role:
-              type: string
+              enum:
+                - yes
+                - no
+                - unknown
             disabled:
-              type: string
+              enum:
+                - yes
+                - no
+                - unknown
             fullMailbox:
-              type: string
+              enum:
+                - yes
+                - no
+                - unknown
         dns:
           type: object
+          additionalProperties: false
+          required:
+            - type
+            - record
           properties:
             type:
               type: string
@@ -74,10 +129,14 @@ components:
           type: string
         score:
           type: integer
+          minimum: 0
+          maximum: 100
         toxic:
           type: string
         toxicity:
           type: integer
+          minimum: 0
+          maximum: 100
         retryAfter:
           type: string
     BatchSample:
@@ -138,13 +197,14 @@ tags:
 paths:
   /v1.1/credits:
     get:
+      operationId: getCredits
       tags:
         - credits
       summary: Check available credits
       description: |-
         Retrieve available credits.
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -157,7 +217,7 @@ paths:
                 type: object
               example:
                 credits: 1000
-        '401':
+        "401":
           description: Unauthorized
           headers:
             Content-Type:
@@ -172,7 +232,7 @@ paths:
                 status: 401
                 error: Unauthorized
                 message: user not found
-        '429':
+        "429":
           description: Too Many Requests
           headers:
             Content-Type:
@@ -189,6 +249,7 @@ paths:
                 message: too many requests
   /v1.1/email/verify:
     get:
+      operationId: verifySingleEmail
       tags:
         - real-time
       summary: Verify email
@@ -207,10 +268,10 @@ paths:
           schema:
             type: integer
             default: 10
-          description: 'timeout for verification (default: 10)'
-          example: '10'
+          description: "timeout for verification (default: 10)"
+          example: "10"
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -220,7 +281,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EmailRecord'
+                $ref: "#/components/schemas/EmailRecord"
               examples:
                 example-0:
                   summary: OK
@@ -230,13 +291,13 @@ paths:
                     reason: accepted_email
                     domain:
                       name: usebouncer.com
-                      acceptAll: 'no'
-                      disposable: 'no'
-                      free: 'no'
+                      acceptAll: "no"
+                      disposable: "no"
+                      free: "no"
                     account:
-                      role: 'no'
-                      disabled: 'no'
-                      fullMailbox: 'no'
+                      role: "no"
+                      disabled: "no"
+                      fullMailbox: "no"
                     dns:
                       type: MX
                       record: aspmx.l.google.com.
@@ -253,10 +314,10 @@ paths:
                     domain:
                       name: usebouncer.com
                       acceptAll: unknown
-                      disposable: 'no'
-                      free: 'no'
+                      disposable: "no"
+                      free: "no"
                     account:
-                      role: 'no'
+                      role: "no"
                       disabled: unknown
                       fullMailbox: unknown
                     dns:
@@ -273,17 +334,17 @@ paths:
                     domain:
                       name: usebouncer.com
                       acceptAll: unknown
-                      disposable: 'no'
-                      free: 'no'
+                      disposable: "no"
+                      free: "no"
                     account:
-                      role: 'no'
+                      role: "no"
                       disabled: unknown
                       fullMailbox: unknown
                     dns:
                       type: MX
                       record: aspmx.l.google.com.
                     provider: google.com
-                    retryAfter: '2022-11-24T09:55:09.029Z'
+                    retryAfter: "2022-11-24T09:55:09.029Z"
                 example-3:
                   summary: OK (with didYouMean)
                   value:
@@ -291,7 +352,7 @@ paths:
                     status: undeliverable
                     reason: invalid_email
                     didYouMean: john1234@gmail.com
-        '402':
+        "402":
           description: Payment Required
           headers:
             Content-Type:
@@ -303,10 +364,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '402'
+                status: "402"
                 error: Payment Required
                 message: 0 credits left
-        '429':
+        "429":
           description: Too Many Requests
           headers:
             Content-Type:
@@ -323,22 +384,19 @@ paths:
                 message: too many requests
   /v1.1/email/verify/batch:
     post:
+      operationId: createBatch
       tags:
         - batch
       summary: Create batch request
       description: >-
-        Verifies one or multiple emails in a batch, offline manner.  
+        Verifies one or multiple emails in a batch, offline manner.
       requestBody:
         required: true
         content:
-          'application/json':
+          "application/json":
             schema:
               type: string
-              example:
-                [
-                {"email": "john@usebouncer.com"},
-                {"email": "jenny@usebouncer.com"}
-                ]
+              example: [{ "email": "john@usebouncer.com" }, { "email": "jenny@usebouncer.com" }]
       parameters:
         - name: callback
           in: query
@@ -346,7 +404,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -359,11 +417,11 @@ paths:
                 type: object
               example:
                 batchId: 4d5fdf6b5ee97c4dbbccbfe1
-                created: '2023-03-26T18:08:15.033Z'
+                created: "2023-03-26T18:08:15.033Z"
                 status: queued
                 quantity: 2
                 duplicates: 0
-        '402':
+        "402":
           description: Payment Required
           headers:
             Content-Type:
@@ -375,11 +433,12 @@ paths:
               schema:
                 type: object
               example:
-                status: '402'
+                status: "402"
                 error: Payment Required
                 message: 1 credits left
   /v1.1/email/verify/batch/{batchId}:
     get:
+      operationId: getBatch
       tags:
         - batch
       summary: Check status
@@ -397,10 +456,10 @@ paths:
           schema:
             type: boolean
             default: false
-          description: 'collect additional processing statistics'
+          description: "collect additional processing statistics"
           example: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -416,8 +475,8 @@ paths:
                   summary: OK (processing)
                   value:
                     batchId: 4d5fdf6b5ee97c4dbbccbfe1
-                    created: '2023-03-26T15:27:26.713Z'
-                    started: '2023-03-26T15:27:30.124Z'
+                    created: "2023-03-26T15:27:26.713Z"
+                    started: "2023-03-26T15:27:30.124Z"
                     status: processing
                     quantity: 2
                     duplicates: 0
@@ -425,9 +484,9 @@ paths:
                   summary: OK (completed)
                   value:
                     batchId: 4d5fdf6b5ee97c4dbbccbfe1
-                    created: '2023-03-26T15:27:26.713Z'
-                    started: '2023-03-26T15:27:30.124Z'
-                    completed: '2023-03-26T15:27:43.250Z'
+                    created: "2023-03-26T15:27:26.713Z"
+                    started: "2023-03-26T15:27:30.124Z"
+                    completed: "2023-03-26T15:27:43.250Z"
                     status: completed
                     quantity: 2
                     duplicates: 0
@@ -436,9 +495,9 @@ paths:
                   summary: OK (completed with stats)
                   value:
                     batchId: 4d5fdf6b5ee97c4dbbccbfe1
-                    created: '2023-03-26T15:27:26.713Z'
-                    started: '2023-03-26T15:27:30.124Z'
-                    completed: '2023-03-26T15:27:43.250Z'
+                    created: "2023-03-26T15:27:26.713Z"
+                    started: "2023-03-26T15:27:30.124Z"
+                    completed: "2023-03-26T15:27:43.250Z"
                     status: completed
                     quantity: 2
                     duplicates: 0
@@ -449,7 +508,7 @@ paths:
                       risky: 0
                       undeliverable: 1
                       unknown: 0
-        '404':
+        "404":
           description: Not Found
           headers:
             Content-Type:
@@ -461,10 +520,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '404'
+                status: "404"
                 error: Not Found
                 message: request 1l2k3k4j5h does not exist
-        '429':
+        "429":
           description: Too Many Requests
           headers:
             Content-Type:
@@ -491,7 +550,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -503,7 +562,7 @@ paths:
               schema:
                 type: object
               example: {}
-        '404':
+        "404":
           description: Not Found
           headers:
             Content-Type:
@@ -515,10 +574,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '404'
+                status: "404"
                 error: Not Found
                 message: request 1l2k3k4j5h does not exist
-        '405':
+        "405":
           description: Method Not Allowed
           headers:
             Content-Type:
@@ -530,11 +589,12 @@ paths:
               schema:
                 type: object
               example:
-                status: '405'
+                status: "405"
                 error: Method Not Allowed
                 message: batch cannot be deleted in current state
   /v1.1/email/verify/batch/{batchId}/finish:
     post:
+      operationId: finishBatch
       tags:
         - batch
       summary: Finish
@@ -554,7 +614,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -566,10 +626,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '400'
+                status: "400"
                 error: Bad Request
                 message: batch has to be running to finish
-        '202':
+        "202":
           description: Accepted
           headers:
             Content-Type:
@@ -583,6 +643,7 @@ paths:
               example: {}
   /v1.1/email/verify/batch/{batchId}/download:
     get:
+      operationId: getBatchResults
       tags:
         - batch
       summary: Get results
@@ -603,7 +664,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -613,20 +674,22 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmailRecord"
               example:
                 - email: john@usebouncer.com
                   status: deliverable
                   reason: accepted_email
                   domain:
                     name: usebouncer.com
-                    acceptAll: 'no'
-                    disposable: 'no'
-                    free: 'no'
+                    acceptAll: "no"
+                    disposable: "no"
+                    free: "no"
                   account:
-                    role: 'no'
-                    disabled: 'no'
-                    fullMailbox: 'no'
+                    role: "no"
+                    disabled: "no"
+                    fullMailbox: "no"
                   dns:
                     type: MX
                     record: aspmx.l.google.com.
@@ -639,13 +702,13 @@ paths:
                   reason: accepted_email
                   domain:
                     name: usebouncer.com
-                    acceptAll: 'no'
-                    disposable: 'no'
-                    free: 'no'
+                    acceptAll: "no"
+                    disposable: "no"
+                    free: "no"
                   account:
-                    role: 'no'
-                    disabled: 'no'
-                    fullMailbox: 'no'
+                    role: "no"
+                    disabled: "no"
+                    fullMailbox: "no"
                   dns:
                     type: MX
                     record: aspmx.l.google.com.
@@ -653,7 +716,7 @@ paths:
                   score: 100
                   toxic: unknown
                   toxicity: 0
-        '404':
+        "404":
           description: Not Found
           headers:
             Content-Type:
@@ -665,21 +728,22 @@ paths:
               schema:
                 type: object
               example:
-                status: '404'
+                status: "404"
                 error: Not Found
                 message: request 1l2k3k4j5h does not exist
-        '405':
+        "405":
           description: Method Not Allowed
           content:
             application/json:
               schema:
                 type: object
               example:
-                status: '405'
+                status: "405"
                 error: Method Not Allowed
                 message: batch is not completed
   /v1.1/email/verify/batch/sync:
     post:
+      operationId: verifyBatchSync
       tags:
         - batch-sync
       summary: Process with email verification queue
@@ -692,8 +756,7 @@ paths:
               type: array
               items:
                 type: string
-              example:
-                ["jane@usebouncer.com","john@usebouncer.com"]
+              example: ["jane@usebouncer.com", "john@usebouncer.com"]
       parameters:
         - name: Content-Type
           in: header
@@ -701,7 +764,7 @@ paths:
             type: string
           example: application/json
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -713,20 +776,20 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EmailRecord'
+                  $ref: "#/components/schemas/EmailRecord"
               example:
                 - email: jane@usebouncer.com
                   status: undeliverable
                   reason: rejected_email
                   domain:
                     name: usebouncer.com
-                    acceptAll: 'no'
-                    disposable: 'no'
-                    free: 'no'
+                    acceptAll: "no"
+                    disposable: "no"
+                    free: "no"
                   account:
-                    role: 'no'
-                    disabled: 'no'
-                    fullMailbox: 'no'
+                    role: "no"
+                    disabled: "no"
+                    fullMailbox: "no"
                   dns:
                     type: MX
                     record: aspmx.l.google.com.
@@ -734,7 +797,7 @@ paths:
                   score: 0
                   toxic: unknown
                   toxicity: 0
-        '400':
+        "400":
           description: Bad Request
           headers:
             Content-Type:
@@ -746,10 +809,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '404'
+                status: "404"
                 error: Bad Request
                 message: too many emails
-        '402':
+        "402":
           description: Payment Required
           headers:
             Content-Type:
@@ -761,10 +824,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '402'
+                status: "402"
                 error: Payment Required
                 message: 13 credits left
-        '429':
+        "429":
           description: Too Many Requests
           headers:
             Content-Type:
@@ -781,6 +844,7 @@ paths:
                 message: too many requests
   /v1/email/verify/batch/sample:
     post:
+      operationId: createBatchSample
       tags:
         - sampling
       summary: Create batch sampling request
@@ -788,16 +852,12 @@ paths:
         Creates sampling batch
       requestBody:
         content:
-          'application/json':
+          "application/json":
             schema:
-              $ref: '#/components/schemas/EmailRequest'
-            example:
-              [
-                {"email": "john@usebouncer.com"},
-                {"email": "jenny@usebouncer.com"}
-              ]
+              $ref: "#/components/schemas/EmailRequest"
+            example: [{ "email": "john@usebouncer.com" }, { "email": "jenny@usebouncer.com" }]
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -807,7 +867,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BatchSample'
+                $ref: "#/components/schemas/BatchSample"
               example:
                 id: "666c3e25d4e24d32c918f876"
                 finished: false
@@ -831,13 +891,20 @@ paths:
                   5: 0
   /v1/email/verify/batch/sample/{id}:
     get:
+      operationId: getBatchSample
       tags:
         - sampling
       summary: Get batch sampling request status
       description: >-
         Get sampling batch status
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -867,6 +934,7 @@ paths:
                   3: 1
   /v1/toxicity/list:
     post:
+      operationId: createToxicityListJob
       tags:
         - toxicity
       summary: Create toxicity list job
@@ -875,8 +943,7 @@ paths:
           application/json:
             schema:
               type: string
-              example:
-                ["jane@usebouncer.com","john@usebouncer.com"]
+              example: ["jane@usebouncer.com", "john@usebouncer.com"]
       parameters:
         - name: Content-Type
           in: header
@@ -884,7 +951,7 @@ paths:
             type: string
           example: application/json
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -897,9 +964,9 @@ paths:
                 type: object
               example:
                 id: 61c69f7907cbda25bc76f7e4
-                createdAt: '2023-01-17T13:15:37.563Z'
+                createdAt: "2023-01-17T13:15:37.563Z"
                 status: processing
-        '402':
+        "402":
           description: Payment Required
           headers:
             Content-Type:
@@ -914,7 +981,7 @@ paths:
                 status: 402
                 error: Payment Required
                 message: not enough credits, 2 required
-        '429':
+        "429":
           description: Too Many Requests
           headers:
             Content-Type:
@@ -931,6 +998,7 @@ paths:
                 message: too many requests
   /v1/toxicity/list/{id}:
     get:
+      operationId: getToxicityListJob
       tags:
         - toxicity
       summary: Check toxicity list job status
@@ -941,7 +1009,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -957,15 +1025,16 @@ paths:
                   summary: OK
                   value:
                     id: 61c69f7907cbda25bc76f7e4
-                    createdAt: '2023-01-17T13:15:37.563Z'
+                    createdAt: "2023-01-17T13:15:37.563Z"
                     status: completed
                 example-1:
                   summary: Error (processing failed)
                   value:
                     id: 61c69f7907cbda25bc76f7e4
-                    createdAt: '2023-01-17T13:15:37.563Z'
+                    createdAt: "2023-01-17T13:15:37.563Z"
                     status: error
     delete:
+      operationId: deleteToxicityListJob
       tags:
         - toxicity
       summary: Delete toxicity list job
@@ -976,7 +1045,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -988,7 +1057,7 @@ paths:
               schema:
                 type: object
               example: {}
-        '404':
+        "404":
           description: Not Found
           headers:
             Content-Type:
@@ -1005,6 +1074,7 @@ paths:
                 message: list not found
   /v1/toxicity/list/{id}/data:
     get:
+      operationId: getToxicityListResults
       tags:
         - toxicity
       summary: Download toxicity list results
@@ -1015,7 +1085,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -1031,7 +1101,7 @@ paths:
                   toxicity: 0
                 - email: hello@usebouncer.com
                   toxicity: 1
-        '400':
+        "400":
           description: Bad Request
           headers:
             Content-Type:
@@ -1046,7 +1116,7 @@ paths:
                 status: 400
                 error: Bad Request
                 message: processing is not completed yet
-        '404':
+        "404":
           description: Not Found
           headers:
             Content-Type:
@@ -1063,6 +1133,7 @@ paths:
                 message: list not found
   /v1.1/domain:
     get:
+      operationId: verifyDomain
       tags:
         - domain
       summary: Verify domain
@@ -1077,7 +1148,7 @@ paths:
             type: string
           example: usebouncer.com
       responses:
-        '200':
+        "200":
           description: OK
           headers:
             Content-Type:
@@ -1091,15 +1162,15 @@ paths:
               example:
                 domain:
                   name: usebouncer.com
-                  acceptAll: 'no'
-                  disposable: 'no'
-                  free: 'no'
+                  acceptAll: "no"
+                  disposable: "no"
+                  free: "no"
                 dns:
                   type: MX
                   record: aspmx.l.google.com.
                 provider: google.com
                 toxic: unknown
-        '402':
+        "402":
           description: Payment Required
           headers:
             Content-Type:
@@ -1111,10 +1182,10 @@ paths:
               schema:
                 type: object
               example:
-                status: '402'
+                status: "402"
                 error: Payment Required
                 message: 0 credits left
-        '429':
+        "429":
           description: Too Many Requests
           headers:
             Content-Type:
